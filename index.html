@@ -4,109 +4,162 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dorota Cichoń | Architecture Portfolio</title>
-  <meta name="description" content="Architecture portfolio of Dorota Cichoń presented as an interactive flipbook." />
+  <meta name="description" content="Architecture portfolio of Dorota Cichoń presented as an interactive digital book." />
   <meta name="theme-color" content="#ffffff" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header" aria-label="Main navigation">
-    <a class="brand" href="#book" aria-label="Dorota Cichoń portfolio home">
+    <a class="brand" href="#book" data-view="book" aria-label="Open portfolio book">
       <span>Dorota Cichoń</span>
       <small>Architecture Portfolio</small>
     </a>
     <nav class="nav-tabs" aria-label="Portfolio sections">
-      <a href="#book">Book</a>
-      <a href="#projects">Projects</a>
-      <a href="#about">About me</a>
-      <a href="#contact">Contact</a>
+      <a href="#book" data-view="book" class="is-active">Portfolio</a>
+      <a href="#projects" data-view="projects">Projects</a>
+      <a href="#about" data-view="about">About me</a>
+      <a href="#contact" data-view="contact">Contact</a>
     </nav>
   </header>
 
   <main>
-    <section class="hero" id="book">
-      <div class="hero-copy">
+    <section class="view active-view" id="book" data-view-panel="book">
+      <section class="hero compact-hero">
         <p class="eyebrow">Interactive portfolio</p>
-        <h1>Architecture in a digital book format.</h1>
-        <p class="intro">Browse the portfolio as a two-page spread with animated page turning, or jump directly to selected projects and categories below.</p>
-      </div>
+        <h1>Architecture portfolio in a book format.</h1>
+        <p class="intro">Open the digital book, turn the pages naturally, and browse the portfolio as two-page spreads. A blank page is inserted after the cover so the CV and table of contents open together.</p>
+      </section>
+
+      <section class="book-shell" aria-label="Interactive portfolio book">
+        <div class="book-toolbar">
+          <div>
+            <div class="page-status" id="pageStatus">Loading portfolio…</div>
+            <p class="pdf-note" id="pdfNote">The book is loaded from <strong>portfolio.pdf</strong>.</p>
+          </div>
+          <div class="toolbar-actions" aria-label="Book controls">
+            <button class="ghost" type="button" id="firstBtn" disabled>First</button>
+            <button class="ghost" type="button" id="prevBtn" disabled>Previous</button>
+            <button class="primary" type="button" id="nextBtn" disabled>Next</button>
+          </div>
+        </div>
+
+        <div class="book-stage" id="bookStage">
+          <div class="book-gutter" aria-hidden="true"></div>
+          <div class="spread" id="spread" aria-live="polite">
+            <article class="page left-page" aria-label="Left page">
+              <img id="leftPage" alt="Portfolio left page" />
+            </article>
+            <article class="page right-page" aria-label="Right page">
+              <img id="rightPage" alt="Portfolio right page" />
+            </article>
+          </div>
+          <div class="flip-page" id="flipPage" aria-hidden="true">
+            <div class="flip-face flip-front"><img id="flipFront" alt="" /></div>
+            <div class="flip-face flip-back"><img id="flipBack" alt="" /></div>
+          </div>
+        </div>
+
+        <div class="jump-row" aria-label="Jump to portfolio page">
+          <label for="pageInput">Jump to book page</label>
+          <input id="pageInput" type="number" min="1" max="59" value="1" disabled />
+          <button type="button" id="jumpBtn" disabled>Open</button>
+        </div>
+      </section>
     </section>
 
-    <section class="book-shell" aria-label="Interactive portfolio book">
-      <div class="book-toolbar">
-        <div>
-          <div class="page-status" id="pageStatus">Loading portfolio…</div>
-          <p class="pdf-note" id="pdfNote">The book is loaded from <strong>portfolio.pdf</strong> in this repository.</p>
+    <section class="view" id="projects" data-view-panel="projects">
+      <section class="section first-section">
+        <div class="section-heading wide-heading">
+          <p class="eyebrow">Projects</p>
+          <h2>Selected works</h2>
+          <p>The portfolio is organized into seven project chapters. Each card uses a visual reference from the PDF and opens the corresponding spread in the book.</p>
         </div>
-        <div class="toolbar-actions" aria-label="Book controls">
-          <button class="ghost" type="button" id="firstBtn" disabled>First</button>
-          <button class="ghost" type="button" id="prevBtn" disabled>Previous</button>
-          <button class="primary" type="button" id="nextBtn" disabled>Next</button>
-        </div>
-      </div>
-
-      <div class="book-stage" id="bookStage">
-        <div class="spread" id="spread" aria-live="polite">
-          <article class="page left-page" aria-label="Left page">
-            <img id="leftPage" alt="Portfolio left page" />
-          </article>
-          <article class="page right-page" aria-label="Right page">
-            <img id="rightPage" alt="Portfolio right page" />
-          </article>
-        </div>
-        <div class="flip-layer" id="flipLayer" aria-hidden="true">
-          <img id="flipImage" alt="" />
-        </div>
-      </div>
-
-      <div class="jump-row" aria-label="Jump to portfolio page">
-        <label for="pageInput">Jump to page</label>
-        <input id="pageInput" type="number" min="1" max="58" value="1" disabled />
-        <button type="button" id="jumpBtn" disabled>Open</button>
-      </div>
+        <div class="project-grid" id="projectGrid" aria-label="Portfolio project list"></div>
+      </section>
     </section>
 
-    <section class="section" id="projects">
-      <div class="section-heading">
-        <p class="eyebrow">Projects</p>
-        <h2>Portfolio categories</h2>
-        <p>Each category opens the matching spread from the PDF portfolio, while the cards below separate the work into clear website sections.</p>
-      </div>
-
-      <div class="project-grid" id="projectGrid" aria-label="Portfolio project list"></div>
-    </section>
-
-    <section class="section about" id="about">
-      <div class="section-heading">
-        <p class="eyebrow">About me</p>
-        <h2>MSc Eng. Arch. Dorota Cichoń</h2>
-      </div>
-      <div class="about-grid">
-        <div class="about-card large">
-          <h3>Profile</h3>
+    <section class="view" id="about" data-view-panel="about">
+      <section class="section first-section about-section">
+        <div class="section-heading wide-heading">
+          <p class="eyebrow">About me</p>
+          <h2>MSc Eng. Arch. Dorota Cichoń</h2>
           <p>Architecture graduate from the Silesian University of Technology, Poland, with a strong interest in unconventional design approaches, bio-inspired solutions, and creative spatial thinking.</p>
-          <p>Open to new challenges and opportunities for professional growth.</p>
         </div>
-        <div class="about-card">
-          <h3>Focus</h3>
-          <p>Unconventional spatial design, bio-inspired architecture, mycelium-based systems, sustainable design, visual arts, photography, and travel.</p>
+
+        <div class="cv-layout">
+          <article class="cv-card cv-profile">
+            <h3>Profile</h3>
+            <p>Open to new challenges and opportunities for professional growth. My work explores organic forms, sustainable design, visual storytelling, and spatial concepts inspired by nature and material experimentation.</p>
+          </article>
+
+          <article class="cv-card">
+            <h3>Contact information</h3>
+            <dl>
+              <div><dt>E-mail</dt><dd><a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a></dd></div>
+              <div><dt>Phone</dt><dd><a href="tel:+48570886838">+48 570 886 838</a></dd></div>
+              <div><dt>City</dt><dd>Gliwice, Poland</dd></div>
+              <div><dt>Birth date</dt><dd>04.04.2001</dd></div>
+            </dl>
+          </article>
+
+          <article class="cv-card">
+            <h3>Education</h3>
+            <ul class="timeline-list">
+              <li><strong>Silesian University of Technology</strong><span>Faculty of Architecture · Master’s studies · 2024–2026</span></li>
+              <li><strong>Silesian University of Technology</strong><span>Faculty of Architecture · Bachelor of Engineering studies · 2020–2024</span></li>
+              <li><strong>VIA University College</strong><span>Architecture Technology and Construction Management · Erasmus+ · 2022–2023</span></li>
+            </ul>
+          </article>
+
+          <article class="cv-card">
+            <h3>Experience</h3>
+            <ul class="timeline-list">
+              <li><strong>Brand Ambassador, Sales</strong><span>MS Services · Tarnowskie Góry, Poland · 09.2025–08.2026</span></li>
+              <li><strong>English Tutor</strong><span>ROZMOWA School · Pilchowice, Poland · 12.2024–07.2025</span></li>
+              <li><strong>Internship</strong><span>NEXT ARCHITECTS · Amsterdam, Netherlands · 09.2023–03.2024</span></li>
+            </ul>
+          </article>
+
+          <article class="cv-card">
+            <h3>Skills</h3>
+            <div class="skill-groups">
+              <p><strong>BIM / CAD / 3D</strong> Rhino, Revit, SketchUp, AutoCAD, Lumion, Enscape</p>
+              <p><strong>Adobe</strong> Photoshop, Illustrator, Lightroom, InDesign</p>
+              <p><strong>Office</strong> Excel, Word, PowerPoint</p>
+              <p><strong>Languages</strong> Polish · mother tongue, English · C1</p>
+            </div>
+          </article>
+
+          <article class="cv-card cv-awards">
+            <h3>Selected achievements</h3>
+            <ul class="timeline-list two-column-list">
+              <li><strong>Where Boundaries Fade</strong><span>Master’s thesis project under patent protection process · 2026</span></li>
+              <li><strong>The Neighborhood Fabric</strong><span>1st Prize / Grand Prix · BACON Student Design Competition · 2026</span></li>
+              <li><strong>Tiny Houses</strong><span>Top 50 · International Architecture Competition Tiny House 2024 · 2025</span></li>
+              <li><strong>Urban Arcade</strong><span>1st Prize · BACON Student Design Competition · 2025</span></li>
+              <li><strong>Beco das Artes</strong><span>Grand Prix · academic renovation competition in Covilhã, Portugal · 2024</span></li>
+              <li><strong>Best Architecture Diploma</strong><span>Selected for the TOP 12 · Architektura & Biznes Poland · 2024</span></li>
+              <li><strong>Models of the GZM Metropolitan Structure</strong><span>Book prepared as part of Urban Design course · co-author of three chapters · 2023</span></li>
+            </ul>
+          </article>
         </div>
-        <div class="about-card">
-          <h3>Selected recognition</h3>
-          <p>Grand Prix and 1st Prize awards in international architecture and urban design competitions, including work presented in the portfolio.</p>
-        </div>
-      </div>
+      </section>
     </section>
 
-    <section class="section contact" id="contact">
-      <div class="section-heading">
-        <p class="eyebrow">Contact</p>
-        <h2>Let’s get in touch</h2>
-      </div>
-      <div class="contact-card">
-        <a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a>
-        <a href="https://www.linkedin.com/in/dorotacichon/" target="_blank" rel="noreferrer">LinkedIn</a>
-        <a href="https://www.instagram.com/dorotvcichon/" target="_blank" rel="noreferrer">Photography portfolio</a>
-      </div>
+    <section class="view" id="contact" data-view-panel="contact">
+      <section class="section first-section contact-section">
+        <div class="section-heading wide-heading">
+          <p class="eyebrow">Contact</p>
+          <h2>Let’s get in touch</h2>
+          <p>For architecture opportunities, collaborations, portfolio review, or project inquiries.</p>
+        </div>
+        <div class="contact-card refined-contact">
+          <a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a>
+          <a href="tel:+48570886838">+48 570 886 838</a>
+          <a href="https://www.linkedin.com/in/dorotacichon/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="https://www.instagram.com/dorotvcichon/" target="_blank" rel="noreferrer">Photography portfolio</a>
+        </div>
+      </section>
     </section>
   </main>
 
