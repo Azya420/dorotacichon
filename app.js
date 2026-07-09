@@ -10,7 +10,7 @@ const projects = [
     pages: '4–13',
     startPdfPage: 4,
     thumbPdfPage: 5,
-    description: 'A seaside resort for the Silesian University of Technology inspired by sea waves, sound recordings, organic form, CLT timber panels, and a green roof landscape.'
+    description: 'Seaside Resort of the Silesian University of Technology.'
   },
   {
     number: '02',
@@ -19,43 +19,43 @@ const projects = [
     pages: '14–21',
     startPdfPage: 14,
     thumbPdfPage: 15,
-    description: 'A Grand Prix urban design proposal transforming a former university campus in Philadelphia into a mixed-use district organized around Live, Play, Work, and Connect.'
+    description: 'Revitalization of a former university campus into a mixed-use district.'
   },
   {
     number: '03',
-    title: 'Gardens Next Door',
-    type: 'Student Project',
+    title: 'Beco das Artes',
+    type: 'Student Project & Competition',
     pages: '22–29',
     startPdfPage: 22,
-    thumbPdfPage: 23,
-    description: 'A student project exploring residential life, shared greenery, and the relationship between everyday domestic spaces and garden-based urban structure.'
+    thumbPdfPage: 27,
+    description: 'Cultural corridor and renovation concept for a historic building in Covilhã.'
   },
   {
     number: '04',
-    title: 'Beco das Artes',
-    type: 'Student Project & Competition',
+    title: 'Gardens Next Door',
+    type: 'Student Project',
     pages: '30–35',
     startPdfPage: 30,
     thumbPdfPage: 31,
-    description: 'A competition project for Covilhã, Portugal, focused on cultural renewal, artistic public space, and adaptive transformation of a historic urban fabric.'
+    description: 'Community housing and garden-based social spaces.'
   },
   {
     number: '05',
-    title: 'NSU BRA Canopy',
+    title: 'Windberg',
     type: 'Competition',
     pages: '36–41',
     startPdfPage: 36,
     thumbPdfPage: 37,
-    description: 'A competition canopy proposal using a clear structural gesture to define shade, gathering, and a recognizable architectural identity.'
+    description: 'Urban wellness intervention within a natural cave landscape.'
   },
   {
     number: '06',
-    title: 'Windberg',
+    title: 'NSU BRA Canopy',
     type: 'Competition',
     pages: '42–47',
     startPdfPage: 42,
     thumbPdfPage: 43,
-    description: 'A compact architectural competition concept shaped by environmental forces, landscape conditions, and expressive spatial form.'
+    description: 'Lightweight canopy proposal for shade, gathering, and public identity.'
   },
   {
     number: '07',
@@ -64,7 +64,7 @@ const projects = [
     pages: '48–57',
     startPdfPage: 48,
     thumbPdfPage: 49,
-    description: 'A master’s thesis on an architecture of coexistence, using mycelium-based bioactive air filtration and spatial systems that blur boundaries between building and environment.'
+    description: 'An architecture of coexistence based on mycelium and bioactive air filtration.'
   }
 ];
 
@@ -85,6 +85,7 @@ const firstBtn = document.getElementById('firstBtn');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const jumpBtn = document.getElementById('jumpBtn');
+const contactGraphic = document.getElementById('contactGraphic');
 const navLinks = [...document.querySelectorAll('[data-view]')];
 const viewPanels = [...document.querySelectorAll('[data-view-panel]')];
 
@@ -161,7 +162,20 @@ function setFaceImage(face, img, source) {
   img.src = source;
 }
 
-async function renderPdfPageImage(pdfPageNumber, targetWidth = 1600) {
+function setVisibleImage(img, shell, source, label) {
+  if (!source) {
+    img.removeAttribute('src');
+    img.alt = label || 'Blank portfolio page';
+    shell.classList.add('blank-sheet');
+    return;
+  }
+
+  shell.classList.remove('blank-sheet');
+  img.alt = label || 'Portfolio page';
+  img.src = source;
+}
+
+async function renderPdfPageImage(pdfPageNumber, targetWidth = 1500) {
   const cacheKey = `${pdfPageNumber}-${targetWidth}`;
   if (pageCache.has(cacheKey)) return pageCache.get(cacheKey);
 
@@ -184,7 +198,7 @@ async function renderPdfPageImage(pdfPageNumber, targetWidth = 1600) {
   return promise;
 }
 
-async function getBookPageSource(bookPageNumber, targetWidth = 1600) {
+async function getBookPageSource(bookPageNumber, targetWidth = 1500) {
   if (isBlankBookPage(bookPageNumber)) return null;
   const pdfPageNumber = bookToPdfPage(bookPageNumber);
   if (!pdfPageNumber || pdfPageNumber < 1 || pdfPageNumber > pdfPageCount) return null;
@@ -192,18 +206,10 @@ async function getBookPageSource(bookPageNumber, targetWidth = 1600) {
 }
 
 async function setBookPage(img, pageShell, bookPageNumber) {
-  const source = await getBookPageSource(bookPageNumber, 1600);
-  if (!source) {
-    img.removeAttribute('src');
-    img.alt = `Blank book page ${bookPageNumber}`;
-    pageShell.classList.add('blank-sheet');
-    return;
-  }
-
-  pageShell.classList.remove('blank-sheet');
+  const source = await getBookPageSource(bookPageNumber, 1500);
   const pdfPage = bookToPdfPage(bookPageNumber);
-  img.alt = `Portfolio PDF page ${pdfPage}`;
-  img.src = source;
+  const label = pdfPage ? `Portfolio PDF page ${pdfPage}` : `Blank book page ${bookPageNumber}`;
+  setVisibleImage(img, pageShell, source, label);
 }
 
 function spreadLabel(start) {
@@ -235,6 +241,40 @@ function preloadAround(start) {
   });
 }
 
+async function prepareNextTurn(sourceStart, targetStart) {
+  const [oldRight, newLeft, newRight] = await Promise.all([
+    getBookPageSource(sourceStart + 1, 1500),
+    getBookPageSource(targetStart, 1500),
+    getBookPageSource(targetStart + 1, 1500)
+  ]);
+
+  setFaceImage(flipFrontFace, flipFront, oldRight);
+  setFaceImage(flipBackFace, flipBack, newLeft);
+  setVisibleImage(rightPage, rightPageShell, newRight, `Portfolio book page ${targetStart + 1}`);
+
+  return () => {
+    setVisibleImage(leftPage, leftPageShell, newLeft, `Portfolio book page ${targetStart}`);
+    setVisibleImage(rightPage, rightPageShell, newRight, `Portfolio book page ${targetStart + 1}`);
+  };
+}
+
+async function preparePrevTurn(sourceStart, targetStart) {
+  const [oldLeft, newLeft, newRight] = await Promise.all([
+    getBookPageSource(sourceStart, 1500),
+    getBookPageSource(targetStart, 1500),
+    getBookPageSource(targetStart + 1, 1500)
+  ]);
+
+  setFaceImage(flipFrontFace, flipFront, oldLeft);
+  setFaceImage(flipBackFace, flipBack, newRight);
+  setVisibleImage(leftPage, leftPageShell, newLeft, `Portfolio book page ${targetStart}`);
+
+  return () => {
+    setVisibleImage(leftPage, leftPageShell, newLeft, `Portfolio book page ${targetStart}`);
+    setVisibleImage(rightPage, rightPageShell, newRight, `Portfolio book page ${targetStart + 1}`);
+  };
+}
+
 async function animateTurn(targetStart, direction) {
   const sourceStart = currentStart;
   isAnimating = true;
@@ -242,37 +282,23 @@ async function animateTurn(targetStart, direction) {
   updateControls(false);
   pageStatus.textContent = 'Turning page…';
 
-  if (direction === 'next') {
-    const [oldRight, newLeft, newRight] = await Promise.all([
-      getBookPageSource(sourceStart + 1, 1600),
-      getBookPageSource(targetStart, 1600),
-      getBookPageSource(targetStart + 1, 1600)
-    ]);
+  const finalizeVisiblePages = direction === 'next'
+    ? await prepareNextTurn(sourceStart, targetStart)
+    : await preparePrevTurn(sourceStart, targetStart);
 
-    setFaceImage(flipFrontFace, flipFront, oldRight);
-    setFaceImage(flipBackFace, flipBack, newLeft);
-    await setBookPage(rightPage, rightPageShell, targetStart + 1);
-    flipPage.className = 'flip-page next';
-  } else {
-    const [oldLeft, newLeft, newRight] = await Promise.all([
-      getBookPageSource(sourceStart, 1600),
-      getBookPageSource(targetStart, 1600),
-      getBookPageSource(targetStart + 1, 1600)
-    ]);
-
-    setFaceImage(flipFrontFace, flipFront, oldLeft);
-    setFaceImage(flipBackFace, flipBack, newRight);
-    await setBookPage(leftPage, leftPageShell, targetStart);
-    flipPage.className = 'flip-page prev';
-  }
+  flipPage.className = `flip-page ${direction}`;
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => flipPage.classList.add('active'));
   });
 
-  window.setTimeout(async () => {
+  window.setTimeout(() => {
+    finalizeVisiblePages();
+  }, 610);
+
+  window.setTimeout(() => {
     currentStart = targetStart;
-    await renderSpread(false);
+    finalizeVisiblePages();
     flipPage.className = 'flip-page';
     flipFront.removeAttribute('src');
     flipBack.removeAttribute('src');
@@ -281,8 +307,10 @@ async function animateTurn(targetStart, direction) {
     isAnimating = false;
     document.body.classList.remove('is-flipping');
     pageStatus.textContent = spreadLabel(currentStart);
+    pageInput.value = currentStart;
+    preloadAround(currentStart);
     updateControls(true);
-  }, 1200);
+  }, 930);
 }
 
 function turnTo(bookPageNumber, preferredDirection = 'next') {
@@ -302,7 +330,7 @@ function prevSpread() {
 
 function openBookPage(bookPageNumber) {
   showView('book');
-  window.setTimeout(() => turnTo(bookPageNumber, bookPageNumber > currentStart ? 'next' : 'prev'), 260);
+  window.setTimeout(() => turnTo(bookPageNumber, bookPageNumber > currentStart ? 'next' : 'prev'), 240);
 }
 
 function openPdfPage(pdfPageNumber) {
@@ -316,10 +344,8 @@ function buildProjectCards() {
         <img data-pdf-thumb="${project.thumbPdfPage}" alt="Preview image for ${project.title}" />
       </div>
       <div class="project-body">
-        <div class="project-meta">
-          <span class="project-number">${project.number}</span>
-          <span>PDF pages ${project.pages}</span>
-        </div>
+        <span class="project-number">${project.number}</span>
+        <span class="project-pages">Pages ${project.pages}</span>
         <h3>${project.title}</h3>
         <p>${project.type}</p>
         <p>${project.description}</p>
@@ -334,7 +360,7 @@ function buildProjectCards() {
 }
 
 async function loadThumbnails() {
-  const thumbs = [...projectGrid.querySelectorAll('img[data-pdf-thumb]')];
+  const thumbs = [...document.querySelectorAll('img[data-pdf-thumb]')];
   await Promise.all(thumbs.map(async (img) => {
     const page = Number(img.dataset.pdfThumb);
     img.src = await renderPdfPageImage(page, 900);
