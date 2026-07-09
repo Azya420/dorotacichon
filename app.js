@@ -8,8 +8,8 @@ const projects = [
     type: 'Bachelor’s Thesis & Competition',
     pages: '4–13',
     startPdfPage: 4,
-    thumbPdfPage: 4,
-    thumbCrop: { x: 0.22, y: 0.12, w: 0.38, h: 0.22, scale: 0.98 },
+    thumbPdfPage: 5,
+    thumbCrop: { x: 0.04, y: 0.05, w: 0.92, h: 0.84, scale: 0.95 },
     description: 'Seaside resort of the Silesian University of Technology.'
   },
   {
@@ -18,8 +18,8 @@ const projects = [
     type: 'Competition',
     pages: '14–21',
     startPdfPage: 14,
-    thumbPdfPage: 14,
-    thumbCrop: { x: 0.24, y: 0.10, w: 0.34, h: 0.24, scale: 1.05 },
+    thumbPdfPage: 15,
+    thumbCrop: { x: 0.04, y: 0.05, w: 0.92, h: 0.82, scale: 0.95 },
     description: 'Revitalization of a former university campus into a mixed-use district.'
   },
   {
@@ -28,8 +28,8 @@ const projects = [
     type: 'Student Project & Competition',
     pages: '22–29',
     startPdfPage: 22,
-    thumbPdfPage: 22,
-    thumbCrop: { x: 0.27, y: 0.10, w: 0.34, h: 0.24, scale: 1.02 },
+    thumbPdfPage: 27,
+    thumbCrop: { x: 0.04, y: 0.06, w: 0.92, h: 0.82, scale: 0.98 },
     description: 'Cultural corridor and renovation concept for a historic building in Covilhã.'
   },
   {
@@ -38,8 +38,8 @@ const projects = [
     type: 'Student Project',
     pages: '30–35',
     startPdfPage: 30,
-    thumbPdfPage: 30,
-    thumbCrop: { x: 0.26, y: 0.10, w: 0.39, h: 0.24, scale: 1.02 },
+    thumbPdfPage: 31,
+    thumbCrop: { x: 0.38, y: 0.02, w: 0.58, h: 0.94, scale: 0.98 },
     description: 'Community housing and garden-based social spaces.'
   },
   {
@@ -48,8 +48,8 @@ const projects = [
     type: 'Competition',
     pages: '36–41',
     startPdfPage: 36,
-    thumbPdfPage: 36,
-    thumbCrop: { x: 0.27, y: 0.10, w: 0.42, h: 0.23, scale: 1.02 },
+    thumbPdfPage: 41,
+    thumbCrop: { x: 0.04, y: 0.06, w: 0.92, h: 0.82, scale: 0.96 },
     description: 'Urban wellness intervention within a natural cave landscape.'
   },
   {
@@ -58,8 +58,8 @@ const projects = [
     type: 'Competition',
     pages: '42–47',
     startPdfPage: 42,
-    thumbPdfPage: 42,
-    thumbCrop: { x: 0.25, y: 0.12, w: 0.42, h: 0.20, scale: 1.05 },
+    thumbPdfPage: 47,
+    thumbCrop: { x: 0.04, y: 0.06, w: 0.92, h: 0.84, scale: 0.96 },
     description: 'Lightweight canopy proposal for shade, gathering, and public identity.'
   },
   {
@@ -68,8 +68,8 @@ const projects = [
     type: 'Master’s Thesis',
     pages: '48–57',
     startPdfPage: 48,
-    thumbPdfPage: 48,
-    thumbCrop: { x: 0.28, y: 0.07, w: 0.36, h: 0.23, scale: 1.0 },
+    thumbPdfPage: 49,
+    thumbCrop: { x: 0.24, y: 0.02, w: 0.74, h: 0.94, scale: 0.98 },
     description: 'Architecture of coexistence based on mycelium and bioactive air filtration.'
   }
 ];
@@ -215,8 +215,8 @@ async function renderProjectThumbnail(project) {
       outputContext.fillStyle = '#ffffff';
       outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
 
-      const maxWidth = outputCanvas.width * 0.86;
-      const maxHeight = outputCanvas.height * 0.78;
+      const maxWidth = outputCanvas.width * 0.92;
+      const maxHeight = outputCanvas.height * 0.86;
       const drawScale = Math.min(maxWidth / sw, maxHeight / sh) * (crop.scale || 1);
       const dw = sw * drawScale;
       const dh = sh * drawScale;
