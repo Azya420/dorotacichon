@@ -1,187 +1,120 @@
 <!doctype html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dorota Cichoń</title>
-  <meta name="description" content="Portfolio Doroty Cichoń" />
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f6f2ed;
-      --text: #1f1f1f;
-      --muted: #6c665f;
-      --card: #ffffff;
-      --accent: #8b5e3c;
-      --line: rgba(31, 31, 31, 0.12);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #ffffff 0, var(--bg) 42%, #ede6dd 100%);
-      color: var(--text);
-    }
-
-    main {
-      width: min(1080px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 72px 0;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 40px;
-      align-items: center;
-      min-height: calc(100vh - 144px);
-    }
-
-    .eyebrow {
-      margin: 0 0 18px;
-      color: var(--accent);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0;
-      max-width: 760px;
-      font-size: clamp(48px, 9vw, 108px);
-      line-height: 0.92;
-      letter-spacing: -0.075em;
-    }
-
-    .lead {
-      margin: 28px 0 0;
-      max-width: 620px;
-      color: var(--muted);
-      font-size: clamp(18px, 2vw, 24px);
-      line-height: 1.5;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 36px;
-    }
-
-    a.button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 0 20px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 650;
-      background: rgba(255, 255, 255, 0.58);
-      backdrop-filter: blur(12px);
-    }
-
-    a.button.primary {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: white;
-    }
-
-    .card {
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 28px;
-      background: rgba(255, 255, 255, 0.72);
-      box-shadow: 0 30px 90px rgba(67, 49, 32, 0.10);
-      backdrop-filter: blur(18px);
-    }
-
-    .card h2 {
-      margin: 0 0 16px;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    .details {
-      display: grid;
-      gap: 14px;
-      margin-top: 24px;
-    }
-
-    .detail {
-      padding-top: 14px;
-      border-top: 1px solid var(--line);
-    }
-
-    .detail strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-
-    .detail span {
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    @media (max-width: 780px) {
-      main {
-        padding: 44px 0;
-      }
-
-      .hero {
-        grid-template-columns: 1fr;
-        min-height: auto;
-      }
-    }
-  </style>
+  <title>Dorota Cichoń | Architecture Portfolio</title>
+  <meta name="description" content="Architecture portfolio of Dorota Cichoń presented as an interactive flipbook." />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <header class="site-header" aria-label="Main navigation">
+    <a class="brand" href="#book" aria-label="Dorota Cichoń portfolio home">
+      <span>Dorota Cichoń</span>
+      <small>Architecture Portfolio</small>
+    </a>
+    <nav class="nav-tabs" aria-label="Portfolio sections">
+      <a href="#book">Book</a>
+      <a href="#projects">Projects</a>
+      <a href="#about">About me</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
   <main>
-    <section class="hero" aria-label="Strona główna portfolio">
-      <div>
-        <p class="eyebrow">Portfolio</p>
-        <h1>Dorota Cichoń</h1>
-        <p class="lead">Minimalna strona startowa przygotowana pod GitHub Pages. Możesz podmienić ten tekst na opis portfolio, projektów, CV albo ofertę.</p>
-        <div class="actions">
-          <a class="button primary" href="#projekty">Zobacz projekty</a>
-          <a class="button" href="mailto:kontakt@example.com">Kontakt</a>
+    <section class="hero" id="book">
+      <div class="hero-copy">
+        <p class="eyebrow">Interactive portfolio</p>
+        <h1>Architecture in a digital book format.</h1>
+        <p class="intro">Browse the portfolio as a two-page spread with animated page turning, or jump directly to selected projects and categories below.</p>
+      </div>
+    </section>
+
+    <section class="book-shell" aria-label="Interactive portfolio book">
+      <div class="book-toolbar">
+        <div>
+          <div class="page-status" id="pageStatus">Loading portfolio…</div>
+          <p class="pdf-note" id="pdfNote">The book is loaded from <strong>portfolio.pdf</strong> in this repository.</p>
+        </div>
+        <div class="toolbar-actions" aria-label="Book controls">
+          <button class="ghost" type="button" id="firstBtn" disabled>First</button>
+          <button class="ghost" type="button" id="prevBtn" disabled>Previous</button>
+          <button class="primary" type="button" id="nextBtn" disabled>Next</button>
         </div>
       </div>
 
-      <aside class="card" id="projekty">
-        <h2>Start strony</h2>
-        <p>Repozytorium jest skonfigurowane jako statyczna strona. Wystarczy edytować plik <strong>index.html</strong>, żeby rozbudować portfolio.</p>
-        <div class="details">
-          <div class="detail">
-            <strong>Status</strong>
-            <span>Gotowe pod GitHub Pages</span>
-          </div>
-          <div class="detail">
-            <strong>Technologia</strong>
-            <span>HTML + CSS, bez frameworka</span>
-          </div>
-          <div class="detail">
-            <strong>Publikacja</strong>
-            <span>GitHub Actions → GitHub Pages</span>
-          </div>
+      <div class="book-stage" id="bookStage">
+        <div class="spread" id="spread" aria-live="polite">
+          <article class="page left-page" aria-label="Left page">
+            <img id="leftPage" alt="Portfolio left page" />
+          </article>
+          <article class="page right-page" aria-label="Right page">
+            <img id="rightPage" alt="Portfolio right page" />
+          </article>
         </div>
-      </aside>
+        <div class="flip-layer" id="flipLayer" aria-hidden="true">
+          <img id="flipImage" alt="" />
+        </div>
+      </div>
+
+      <div class="jump-row" aria-label="Jump to portfolio page">
+        <label for="pageInput">Jump to page</label>
+        <input id="pageInput" type="number" min="1" max="58" value="1" disabled />
+        <button type="button" id="jumpBtn" disabled>Open</button>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-heading">
+        <p class="eyebrow">Projects</p>
+        <h2>Portfolio categories</h2>
+        <p>Each category opens the matching spread from the PDF portfolio, while the cards below separate the work into clear website sections.</p>
+      </div>
+
+      <div class="project-grid" id="projectGrid" aria-label="Portfolio project list"></div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="section-heading">
+        <p class="eyebrow">About me</p>
+        <h2>MSc Eng. Arch. Dorota Cichoń</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-card large">
+          <h3>Profile</h3>
+          <p>Architecture graduate from the Silesian University of Technology, Poland, with a strong interest in unconventional design approaches, bio-inspired solutions, and creative spatial thinking.</p>
+          <p>Open to new challenges and opportunities for professional growth.</p>
+        </div>
+        <div class="about-card">
+          <h3>Focus</h3>
+          <p>Unconventional spatial design, bio-inspired architecture, mycelium-based systems, sustainable design, visual arts, photography, and travel.</p>
+        </div>
+        <div class="about-card">
+          <h3>Selected recognition</h3>
+          <p>Grand Prix and 1st Prize awards in international architecture and urban design competitions, including work presented in the portfolio.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="section-heading">
+        <p class="eyebrow">Contact</p>
+        <h2>Let’s get in touch</h2>
+      </div>
+      <div class="contact-card">
+        <a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a>
+        <a href="https://www.linkedin.com/in/dorotacichon/" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="https://www.instagram.com/dorotvcichon/" target="_blank" rel="noreferrer">Photography portfolio</a>
+      </div>
     </section>
   </main>
+
+  <footer class="site-footer">
+    <p>© Dorota Cichoń · Architecture Portfolio</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
