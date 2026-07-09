@@ -27,7 +27,7 @@
       <section class="hero compact-hero">
         <p class="eyebrow">Interactive portfolio</p>
         <h1>Architecture portfolio in a book format.</h1>
-        <p class="intro">Open the digital book, turn the pages naturally, and browse the portfolio as two-page spreads. A blank page is inserted after the cover so the CV and table of contents open together.</p>
+        <p class="intro">Browse the portfolio as a clean two-page digital book. A blank page is inserted after the cover, so the CV and table of contents open as one spread.</p>
       </section>
 
       <section class="book-shell" aria-label="Interactive portfolio book">
@@ -39,7 +39,7 @@
           <div class="toolbar-actions" aria-label="Book controls">
             <button class="ghost" type="button" id="firstBtn" disabled>First</button>
             <button class="ghost" type="button" id="prevBtn" disabled>Previous</button>
-            <button class="primary" type="button" id="nextBtn" disabled>Next</button>
+            <button class="primary" type="button" id="nextBtn" disabled>Next page</button>
           </div>
         </div>
 
@@ -72,7 +72,7 @@
         <div class="section-heading wide-heading">
           <p class="eyebrow">Projects</p>
           <h2>Selected works</h2>
-          <p>The portfolio is organized into seven project chapters. Each card uses a visual reference from the PDF and opens the corresponding spread in the book.</p>
+          <p>Project cards follow the visual rhythm of the portfolio: a large image, a strong project number, page range, title, and category. Each card opens the correct chapter in the book.</p>
         </div>
         <div class="project-grid" id="projectGrid" aria-label="Portfolio project list"></div>
       </section>
@@ -80,84 +80,104 @@
 
     <section class="view" id="about" data-view-panel="about">
       <section class="section first-section about-section">
-        <div class="section-heading wide-heading">
-          <p class="eyebrow">About me</p>
-          <h2>MSc Eng. Arch. Dorota Cichoń</h2>
-          <p>Architecture graduate from the Silesian University of Technology, Poland, with a strong interest in unconventional design approaches, bio-inspired solutions, and creative spatial thinking.</p>
+        <div class="section-heading wide-heading cv-heading-row">
+          <div>
+            <p class="eyebrow">About me</p>
+            <h2>MSc Eng. Arch. Dorota Cichoń</h2>
+          </div>
+          <p>Compact CV overview with all key information from the portfolio, organized in a cleaner, shorter layout so it can be read quickly without becoming a very long page.</p>
         </div>
 
-        <div class="cv-layout">
-          <article class="cv-card cv-profile">
+        <article class="cv-sheet">
+          <section class="cv-block cv-intro">
             <h3>Profile</h3>
-            <p>Open to new challenges and opportunities for professional growth. My work explores organic forms, sustainable design, visual storytelling, and spatial concepts inspired by nature and material experimentation.</p>
-          </article>
+            <p>Architecture graduate from the Silesian University of Technology, Poland, interested in unconventional design approaches, bio-inspired solutions, and creative spatial thinking. Open to new challenges and opportunities for professional growth.</p>
+          </section>
 
-          <article class="cv-card">
-            <h3>Contact information</h3>
+          <section class="cv-block compact-contact">
+            <h3>Contact</h3>
             <dl>
               <div><dt>E-mail</dt><dd><a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a></dd></div>
               <div><dt>Phone</dt><dd><a href="tel:+48570886838">+48 570 886 838</a></dd></div>
               <div><dt>City</dt><dd>Gliwice, Poland</dd></div>
-              <div><dt>Birth date</dt><dd>04.04.2001</dd></div>
+              <div><dt>Date of birth</dt><dd>04.04.2001</dd></div>
             </dl>
-          </article>
+          </section>
 
-          <article class="cv-card">
+          <section class="cv-block">
+            <h3>Work experience</h3>
+            <ul class="timeline-list">
+              <li><strong>Brand Ambassador, Sales</strong><span>MS Services · Tarnowskie Góry, Poland · 09.2025–08.2026 · 11 months</span></li>
+              <li><strong>English Tutor</strong><span>ROZMOWA School · Pilchowice, Poland · 12.2024–07.2025 · 8 months</span></li>
+              <li><strong>Internship</strong><span>NEXT ARCHITECTS · Amsterdam, Netherlands · 09.2023–03.2024 · 6 months</span></li>
+            </ul>
+          </section>
+
+          <section class="cv-block">
             <h3>Education</h3>
             <ul class="timeline-list">
-              <li><strong>Silesian University of Technology</strong><span>Faculty of Architecture · Master’s studies · 2024–2026</span></li>
-              <li><strong>Silesian University of Technology</strong><span>Faculty of Architecture · Bachelor of Engineering studies · 2020–2024</span></li>
-              <li><strong>VIA University College</strong><span>Architecture Technology and Construction Management · Erasmus+ · 2022–2023</span></li>
+              <li><strong>Silesian University of Technology</strong><span>Faculty of Architecture · Master’s studies · 2024–2026 · 1.5 years</span></li>
+              <li><strong>Silesian University of Technology</strong><span>Faculty of Architecture · Bachelor of Engineering studies · 2020–2024 · 4 years</span></li>
+              <li><strong>VIA University College</strong><span>Architecture Technology and Construction Management · Erasmus+ · 08.2022–02.2023</span></li>
             </ul>
-          </article>
+          </section>
 
-          <article class="cv-card">
-            <h3>Experience</h3>
+          <section class="cv-block">
+            <h3>Additional education</h3>
             <ul class="timeline-list">
-              <li><strong>Brand Ambassador, Sales</strong><span>MS Services · Tarnowskie Góry, Poland · 09.2025–08.2026</span></li>
-              <li><strong>English Tutor</strong><span>ROZMOWA School · Pilchowice, Poland · 12.2024–07.2025</span></li>
-              <li><strong>Internship</strong><span>NEXT ARCHITECTS · Amsterdam, Netherlands · 09.2023–03.2024</span></li>
+              <li><strong>Art Courses</strong><span>Drawing / Painting / Architectural Sketching · advanced · 2016–2020</span></li>
+              <li><strong>State Music School of the 1st and 2nd Degree in Gliwice</strong><span>Education level: First degree · instrument: piano · 2011–2016</span></li>
             </ul>
-          </article>
+          </section>
 
-          <article class="cv-card">
+          <section class="cv-block">
             <h3>Skills</h3>
             <div class="skill-groups">
               <p><strong>BIM / CAD / 3D</strong> Rhino, Revit, SketchUp, AutoCAD, Lumion, Enscape</p>
               <p><strong>Adobe</strong> Photoshop, Illustrator, Lightroom, InDesign</p>
-              <p><strong>Office</strong> Excel, Word, PowerPoint</p>
+              <p><strong>MS Office</strong> Excel, Word, PowerPoint</p>
               <p><strong>Languages</strong> Polish · mother tongue, English · C1</p>
             </div>
-          </article>
+          </section>
 
-          <article class="cv-card cv-awards">
-            <h3>Selected achievements</h3>
-            <ul class="timeline-list two-column-list">
+          <section class="cv-block cv-achievements">
+            <h3>Achievements</h3>
+            <ul class="timeline-list achievement-list">
               <li><strong>Where Boundaries Fade</strong><span>Master’s thesis project under patent protection process · 2026</span></li>
               <li><strong>The Neighborhood Fabric</strong><span>1st Prize / Grand Prix · BACON Student Design Competition · 2026</span></li>
               <li><strong>Tiny Houses</strong><span>Top 50 · International Architecture Competition Tiny House 2024 · 2025</span></li>
               <li><strong>Urban Arcade</strong><span>1st Prize · BACON Student Design Competition · 2025</span></li>
-              <li><strong>Beco das Artes</strong><span>Grand Prix · academic renovation competition in Covilhã, Portugal · 2024</span></li>
-              <li><strong>Best Architecture Diploma</strong><span>Selected for the TOP 12 · Architektura & Biznes Poland · 2024</span></li>
-              <li><strong>Models of the GZM Metropolitan Structure</strong><span>Book prepared as part of Urban Design course · co-author of three chapters · 2023</span></li>
+              <li><strong>Beco das Artes</strong><span>Grand Prix · renovation of a historic building in Covilhã, Portugal · 2024</span></li>
+              <li><strong>Best Architecture Diploma</strong><span>Selected for the TOP 12 of the Best Architecture Diploma 2025 competition · 2024</span></li>
+              <li><strong>The Revival</strong><span>Honourable mention · international architecture competition · 2024</span></li>
+              <li><strong>Models of the GZM Metropolitan Structure</strong><span>Book co-author · Urban Design / City Structure Modelling section · 2023</span></li>
+              <li><strong>Oddyssey of the Mind</strong><span>International team-based creativity competition · 2nd place / 5th place / top 20 · 2015–2018</span></li>
             </ul>
-          </article>
-        </div>
+          </section>
+        </article>
       </section>
     </section>
 
     <section class="view" id="contact" data-view-panel="contact">
       <section class="section first-section contact-section">
-        <div class="section-heading wide-heading">
-          <p class="eyebrow">Contact</p>
-          <h2>Let’s get in touch</h2>
-          <p>For architecture opportunities, collaborations, portfolio review, or project inquiries.</p>
-        </div>
-        <div class="contact-card refined-contact">
-          <a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a>
-          <a href="tel:+48570886838">+48 570 886 838</a>
-          <a href="https://www.linkedin.com/in/dorotacichon/" target="_blank" rel="noreferrer">LinkedIn</a>
-          <a href="https://www.instagram.com/dorotvcichon/" target="_blank" rel="noreferrer">Photography portfolio</a>
+        <div class="contact-layout">
+          <div>
+            <div class="section-heading wide-heading">
+              <p class="eyebrow">Contact</p>
+              <h2>Let’s get in touch</h2>
+              <p>For architecture opportunities, collaborations, portfolio review, or project inquiries.</p>
+            </div>
+            <div class="contact-card refined-contact">
+              <a href="mailto:dorotacichon5@gmail.com">dorotacichon5@gmail.com</a>
+              <a href="tel:+48570886838">+48 570 886 838</a>
+              <a href="https://www.linkedin.com/in/dorotacichon/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href="https://www.instagram.com/dorotvcichon/" target="_blank" rel="noreferrer">Photography portfolio</a>
+            </div>
+          </div>
+          <figure class="contact-visual">
+            <img id="contactGraphic" data-pdf-thumb="52" alt="Portfolio diagram used as contact page graphic" />
+            <figcaption>Selected diagram from the portfolio</figcaption>
+          </figure>
         </div>
       </section>
     </section>
