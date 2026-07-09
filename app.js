@@ -2,13 +2,76 @@ const PDF_URL = 'portfolio.pdf';
 const FALLBACK_PDF_PAGES = 58;
 
 const projects = [
-  { number: '01', title: 'Sea Echo', type: 'Bachelor’s Thesis & Competition', pages: '4–13', startPdfPage: 4, thumbPdfPage: 4, description: 'Seaside resort of the Silesian University of Technology.' },
-  { number: '02', title: 'Neighborhood Fabric', type: 'Competition', pages: '14–21', startPdfPage: 14, thumbPdfPage: 14, description: 'Revitalization of a former university campus into a mixed-use district.' },
-  { number: '03', title: 'Beco das Artes', type: 'Student Project & Competition', pages: '22–29', startPdfPage: 22, thumbPdfPage: 22, description: 'Cultural corridor and renovation concept for a historic building in Covilhã.' },
-  { number: '04', title: 'Gardens Next Door', type: 'Student Project', pages: '30–35', startPdfPage: 30, thumbPdfPage: 30, description: 'Community housing and garden-based social spaces.' },
-  { number: '05', title: 'Windberg', type: 'Competition', pages: '36–41', startPdfPage: 36, thumbPdfPage: 36, description: 'Urban wellness intervention within a natural cave landscape.' },
-  { number: '06', title: 'NSU BRA Canopy', type: 'Competition', pages: '42–47', startPdfPage: 42, thumbPdfPage: 42, description: 'Lightweight canopy proposal for shade, gathering, and public identity.' },
-  { number: '07', title: 'Where Boundaries Fade', type: 'Master’s Thesis', pages: '48–57', startPdfPage: 48, thumbPdfPage: 48, description: 'Architecture of coexistence based on mycelium and bioactive air filtration.' }
+  {
+    number: '01',
+    title: 'Sea Echo',
+    type: 'Bachelor’s Thesis & Competition',
+    pages: '4–13',
+    startPdfPage: 4,
+    thumbPdfPage: 4,
+    thumbCrop: { x: 0.22, y: 0.12, w: 0.38, h: 0.22, scale: 0.98 },
+    description: 'Seaside resort of the Silesian University of Technology.'
+  },
+  {
+    number: '02',
+    title: 'Neighborhood Fabric',
+    type: 'Competition',
+    pages: '14–21',
+    startPdfPage: 14,
+    thumbPdfPage: 14,
+    thumbCrop: { x: 0.24, y: 0.10, w: 0.34, h: 0.24, scale: 1.05 },
+    description: 'Revitalization of a former university campus into a mixed-use district.'
+  },
+  {
+    number: '03',
+    title: 'Beco das Artes',
+    type: 'Student Project & Competition',
+    pages: '22–29',
+    startPdfPage: 22,
+    thumbPdfPage: 22,
+    thumbCrop: { x: 0.27, y: 0.10, w: 0.34, h: 0.24, scale: 1.02 },
+    description: 'Cultural corridor and renovation concept for a historic building in Covilhã.'
+  },
+  {
+    number: '04',
+    title: 'Gardens Next Door',
+    type: 'Student Project',
+    pages: '30–35',
+    startPdfPage: 30,
+    thumbPdfPage: 30,
+    thumbCrop: { x: 0.26, y: 0.10, w: 0.39, h: 0.24, scale: 1.02 },
+    description: 'Community housing and garden-based social spaces.'
+  },
+  {
+    number: '05',
+    title: 'Windberg',
+    type: 'Competition',
+    pages: '36–41',
+    startPdfPage: 36,
+    thumbPdfPage: 36,
+    thumbCrop: { x: 0.27, y: 0.10, w: 0.42, h: 0.23, scale: 1.02 },
+    description: 'Urban wellness intervention within a natural cave landscape.'
+  },
+  {
+    number: '06',
+    title: 'NSU BRA Canopy',
+    type: 'Competition',
+    pages: '42–47',
+    startPdfPage: 42,
+    thumbPdfPage: 42,
+    thumbCrop: { x: 0.25, y: 0.12, w: 0.42, h: 0.20, scale: 1.05 },
+    description: 'Lightweight canopy proposal for shade, gathering, and public identity.'
+  },
+  {
+    number: '07',
+    title: 'Where Boundaries Fade',
+    type: 'Master’s Thesis',
+    pages: '48–57',
+    startPdfPage: 48,
+    thumbPdfPage: 48,
+    thumbCrop: { x: 0.28, y: 0.07, w: 0.36, h: 0.23, scale: 1.0 },
+    description: 'Architecture of coexistence based on mycelium and bioactive air filtration.'
+  }
 ];
 
 const bookStage = document.getElementById('bookStage');
@@ -29,6 +92,7 @@ let pageFlip = null;
 let isBookReady = false;
 let flipBookElement = null;
 const pageCache = new Map();
+const thumbnailCache = new Map();
 
 function showView(viewName, pushHash = true) {
   const target = viewPanels.some((panel) => panel.dataset.viewPanel === viewName) ? viewName : 'book';
@@ -120,6 +184,51 @@ async function renderPdfPageImage(pdfPageNumber, targetWidth = 1250) {
   });
 
   pageCache.set(cacheKey, promise);
+  return promise;
+}
+
+async function renderProjectThumbnail(project) {
+  const cacheKey = `project-thumb-${project.number}`;
+  if (thumbnailCache.has(cacheKey)) return thumbnailCache.get(cacheKey);
+
+  const promise = pdfDoc.getPage(project.thumbPdfPage).then((page) => {
+    const viewport = page.getViewport({ scale: 1 });
+    const scale = 1800 / viewport.width;
+    const scaledViewport = page.getViewport({ scale });
+    const sourceCanvas = document.createElement('canvas');
+    const sourceContext = sourceCanvas.getContext('2d', { alpha: false });
+
+    sourceCanvas.width = Math.floor(scaledViewport.width);
+    sourceCanvas.height = Math.floor(scaledViewport.height);
+
+    return page.render({ canvasContext: sourceContext, viewport: scaledViewport }).promise.then(() => {
+      const crop = project.thumbCrop;
+      const sx = Math.floor(crop.x * sourceCanvas.width);
+      const sy = Math.floor(crop.y * sourceCanvas.height);
+      const sw = Math.floor(crop.w * sourceCanvas.width);
+      const sh = Math.floor(crop.h * sourceCanvas.height);
+
+      const outputCanvas = document.createElement('canvas');
+      const outputContext = outputCanvas.getContext('2d', { alpha: false });
+      outputCanvas.width = 1200;
+      outputCanvas.height = 520;
+      outputContext.fillStyle = '#ffffff';
+      outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+
+      const maxWidth = outputCanvas.width * 0.86;
+      const maxHeight = outputCanvas.height * 0.78;
+      const drawScale = Math.min(maxWidth / sw, maxHeight / sh) * (crop.scale || 1);
+      const dw = sw * drawScale;
+      const dh = sh * drawScale;
+      const dx = (outputCanvas.width - dw) / 2;
+      const dy = (outputCanvas.height - dh) / 2;
+
+      outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, dx, dy, dw, dh);
+      return outputCanvas.toDataURL('image/webp', 0.92);
+    });
+  });
+
+  thumbnailCache.set(cacheKey, promise);
   return promise;
 }
 
@@ -248,11 +357,11 @@ function openPdfPage(pdfPageNumber) {
 }
 
 function buildProjectCards() {
-  projectGrid.innerHTML = projects.map((project) => `
+  projectGrid.innerHTML = projects.map((project, index) => `
     <article class="project-card">
       <button type="button" class="project-open-area" data-pdf-page="${project.startPdfPage}" aria-label="Open ${project.title} in portfolio">
         <span class="project-thumb">
-          <img data-pdf-thumb="${project.thumbPdfPage}" alt="Preview image for ${project.title}" />
+          <img data-project-thumb-index="${index}" alt="Preview image for ${project.title}" />
         </span>
         <span class="project-body">
           <span class="project-number">${project.number}</span>
@@ -270,10 +379,10 @@ function buildProjectCards() {
 }
 
 async function loadThumbnails() {
-  const thumbs = [...document.querySelectorAll('img[data-pdf-thumb]')];
+  const thumbs = [...document.querySelectorAll('img[data-project-thumb-index]')];
   await Promise.all(thumbs.map(async (img) => {
-    const page = Number(img.dataset.pdfThumb);
-    img.src = await renderPdfPageImage(page, 900);
+    const project = projects[Number(img.dataset.projectThumbIndex)];
+    img.src = await renderProjectThumbnail(project);
   }));
 }
 
