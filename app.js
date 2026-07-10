@@ -9,7 +9,7 @@ const projects = [
     pages: '4–13',
     startPdfPage: 4,
     thumbPdfPage: 4,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.60, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Seaside resort of the Silesian University of Technology.'
   },
   {
@@ -19,7 +19,7 @@ const projects = [
     pages: '14–21',
     startPdfPage: 14,
     thumbPdfPage: 14,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.60, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Revitalization of a former university campus into a mixed-use district.'
   },
   {
@@ -29,7 +29,7 @@ const projects = [
     pages: '22–29',
     startPdfPage: 22,
     thumbPdfPage: 22,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.62, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Cultural corridor and renovation concept for a historic building in Covilhã.'
   },
   {
@@ -39,7 +39,7 @@ const projects = [
     pages: '30–35',
     startPdfPage: 30,
     thumbPdfPage: 30,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.62, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Community housing and garden-based social spaces.'
   },
   {
@@ -49,7 +49,7 @@ const projects = [
     pages: '36–41',
     startPdfPage: 36,
     thumbPdfPage: 36,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.62, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Urban wellness intervention within a natural cave landscape.'
   },
   {
@@ -59,7 +59,7 @@ const projects = [
     pages: '42–47',
     startPdfPage: 42,
     thumbPdfPage: 42,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.62, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Lightweight canopy proposal for shade, gathering, and public identity.'
   },
   {
@@ -69,7 +69,7 @@ const projects = [
     pages: '48–57',
     startPdfPage: 48,
     thumbPdfPage: 48,
-    thumbCrop: { x: 0.50, y: 0.10, w: 0.48, h: 0.62, scale: 1.0 },
+    thumbCrop: { x: 0.42, y: 0.03, w: 0.56, h: 0.74, scale: 0.92 },
     description: 'Architecture of coexistence based on mycelium and bioactive air filtration.'
   }
 ];
@@ -188,7 +188,7 @@ async function renderPdfPageImage(pdfPageNumber, targetWidth = 1250) {
 }
 
 async function renderProjectThumbnail(project) {
-  const cacheKey = `project-title-thumb-${project.number}`;
+  const cacheKey = `balanced-project-title-thumb-${project.number}`;
   if (thumbnailCache.has(cacheKey)) return thumbnailCache.get(cacheKey);
 
   const promise = pdfDoc.getPage(project.thumbPdfPage).then((page) => {
@@ -211,17 +211,36 @@ async function renderProjectThumbnail(project) {
       const outputCanvas = document.createElement('canvas');
       const outputContext = outputCanvas.getContext('2d', { alpha: false });
       outputCanvas.width = 1200;
-      outputCanvas.height = 520;
+      outputCanvas.height = 849;
+
       outputContext.fillStyle = '#ffffff';
       outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
 
-      const drawScale = Math.max(outputCanvas.width / sw, outputCanvas.height / sh) * (crop.scale || 1);
-      const dw = sw * drawScale;
-      const dh = sh * drawScale;
-      const dx = (outputCanvas.width - dw) / 2;
-      const dy = (outputCanvas.height - dh) / 2;
+      // Soft image background fills the whole card, so there are no white empty fields.
+      const backgroundScale = Math.max(outputCanvas.width / sw, outputCanvas.height / sh);
+      const bgWidth = sw * backgroundScale;
+      const bgHeight = sh * backgroundScale;
+      const bgX = (outputCanvas.width - bgWidth) / 2;
+      const bgY = (outputCanvas.height - bgHeight) / 2;
+      outputContext.save();
+      outputContext.filter = 'blur(16px) contrast(1.04)';
+      outputContext.globalAlpha = 0.42;
+      outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, bgX, bgY, bgWidth, bgHeight);
+      outputContext.restore();
 
-      outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, dx, dy, dw, dh);
+      outputContext.fillStyle = 'rgba(255,255,255,0.22)';
+      outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+
+      // Main image is contained, so the whole title-page visual stays visible.
+      const maxWidth = outputCanvas.width * 0.92;
+      const maxHeight = outputCanvas.height * 0.90;
+      const foregroundScale = Math.min(maxWidth / sw, maxHeight / sh) * (crop.scale || 1);
+      const fgWidth = sw * foregroundScale;
+      const fgHeight = sh * foregroundScale;
+      const fgX = (outputCanvas.width - fgWidth) / 2;
+      const fgY = (outputCanvas.height - fgHeight) / 2;
+      outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, fgX, fgY, fgWidth, fgHeight);
+
       return outputCanvas.toDataURL('image/webp', 0.92);
     });
   });
