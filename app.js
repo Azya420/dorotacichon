@@ -104,13 +104,83 @@ async function renderPdfPageImage(pdfPageNumber, targetWidth = 1250) {
   return promise;
 }
 
+function detectVisualBounds(context, sx, sy, sw, sh) {
+  const step = 4;
+  const imageData = context.getImageData(sx, sy, sw, sh).data;
+  const cols = Math.ceil(sw / step);
+  const rows = Math.ceil(sh / step);
+  const colHits = new Uint16Array(cols);
+  const rowHits = new Uint16Array(rows);
+
+  for (let y = 0, row = 0; y < sh; y += step, row += 1) {
+    for (let x = 0, col = 0; x < sw; x += step, col += 1) {
+      const index = (y * sw + x) * 4;
+      const r = imageData[index];
+      const g = imageData[index + 1];
+      const b = imageData[index + 2];
+      const brightness = (r + g + b) / 3;
+      const contrast = Math.max(r, g, b) - Math.min(r, g, b);
+      const isContent = brightness < 242 && (contrast > 8 || brightness < 232);
+      if (isContent) {
+        colHits[col] += 1;
+        rowHits[row] += 1;
+      }
+    }
+  }
+
+  const minColHits = Math.max(4, Math.floor(rows * 0.018));
+  const minRowHits = Math.max(4, Math.floor(cols * 0.018));
+  let left = 0;
+  let right = cols - 1;
+  let top = 0;
+  let bottom = rows - 1;
+
+  while (left < cols && colHits[left] < minColHits) left += 1;
+  while (right > left && colHits[right] < minColHits) right -= 1;
+  while (top < rows && rowHits[top] < minRowHits) top += 1;
+  while (bottom > top && rowHits[bottom] < minRowHits) bottom -= 1;
+
+  if (left >= right || top >= bottom) return { x: sx, y: sy, w: sw, h: sh };
+
+  const paddingX = Math.floor(sw * 0.006);
+  const paddingY = Math.floor(sh * 0.006);
+  const x = Math.max(sx, sx + left * step - paddingX);
+  const y = Math.max(sy, sy + top * step - paddingY);
+  const maxX = Math.min(sx + sw, sx + (right + 1) * step + paddingX);
+  const maxY = Math.min(sy + sh, sy + (bottom + 1) * step + paddingY);
+
+  return { x, y, w: maxX - x, h: maxY - y };
+}
+
+function cropToRatio(bounds, targetRatio) {
+  let { x, y, w, h } = bounds;
+  const currentRatio = w / h;
+
+  if (currentRatio > targetRatio) {
+    const newW = h * targetRatio;
+    x += (w - newW) / 2;
+    w = newW;
+  } else {
+    const newH = w / targetRatio;
+    y += (h - newH) / 2;
+    h = newH;
+  }
+
+  return {
+    x: Math.round(x),
+    y: Math.round(y),
+    w: Math.round(w),
+    h: Math.round(h)
+  };
+}
+
 async function renderProjectThumbnail(project) {
-  const cacheKey = `visual-fill-v5-${project.number}`;
+  const cacheKey = `uniform-visual-crop-v7-${project.number}`;
   if (thumbnailCache.has(cacheKey)) return thumbnailCache.get(cacheKey);
 
   const promise = pdfDoc.getPage(project.thumbPdfPage).then((page) => {
     const viewport = page.getViewport({ scale: 1 });
-    const scale = 1800 / viewport.width;
+    const scale = 2200 / viewport.width;
     const scaledViewport = page.getViewport({ scale });
     const sourceCanvas = document.createElement('canvas');
     const sourceContext = sourceCanvas.getContext('2d', { alpha: false });
@@ -128,24 +198,22 @@ async function renderProjectThumbnail(project) {
       outputCanvas.width = 1200;
       outputCanvas.height = 848;
 
-      outputContext.fillStyle = '#ffffff';
-      outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+      const visualBounds = detectVisualBounds(sourceContext, sx, sy, sw, sh);
+      const finalCrop = cropToRatio(visualBounds, outputCanvas.width / outputCanvas.height);
 
-      const bgScale = Math.max(outputCanvas.width / sw, outputCanvas.height / sh);
-      const bgw = sw * bgScale;
-      const bgh = sh * bgScale;
-      outputContext.save();
-      try { outputContext.filter = 'blur(14px) saturate(1.02) contrast(1.04)'; } catch (e) {}
-      outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, (outputCanvas.width - bgw) / 2, (outputCanvas.height - bgh) / 2, bgw, bgh);
-      outputContext.restore();
-      outputContext.fillStyle = 'rgba(255,255,255,0.03)';
-      outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+      outputContext.drawImage(
+        sourceCanvas,
+        finalCrop.x,
+        finalCrop.y,
+        finalCrop.w,
+        finalCrop.h,
+        0,
+        0,
+        outputCanvas.width,
+        outputCanvas.height
+      );
 
-      const fgScale = Math.min(outputCanvas.width / sw, outputCanvas.height / sh) * (crop.scale || 1);
-      const fgw = sw * fgScale;
-      const fgh = sh * fgScale;
-      outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, (outputCanvas.width - fgw) / 2, (outputCanvas.height - fgh) / 2, fgw, fgh);
-      return outputCanvas.toDataURL('image/webp', 0.92);
+      return outputCanvas.toDataURL('image/webp', 0.94);
     });
   });
 
