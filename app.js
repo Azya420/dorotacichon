@@ -1,14 +1,15 @@
 const PDF_URL = 'portfolio.pdf';
 const FALLBACK_PDF_PAGES = 58;
+const PROFILE_IMAGE_URL = 'assets/profile.svg';
 
 const projects = [
-  { number: '01', title: 'Sea Echo', type: 'Bachelor’s Thesis & Competition', pages: '4–13', startPdfPage: 4, thumbPdfPage: 5, thumbCrop: { x: 0.03, y: 0.03, w: 0.94, h: 0.90, scale: 0.98 } },
-  { number: '02', title: 'Neighborhood Fabric', type: 'Competition', pages: '14–21', startPdfPage: 14, thumbPdfPage: 15, thumbCrop: { x: 0.03, y: 0.03, w: 0.94, h: 0.90, scale: 0.98 } },
-  { number: '03', title: 'Beco das Artes', type: 'Student Project & Competition', pages: '22–29', startPdfPage: 22, thumbPdfPage: 23, thumbCrop: { x: 0.03, y: 0.03, w: 0.94, h: 0.90, scale: 0.98 } },
-  { number: '04', title: 'Gardens Next Door', type: 'Student Project', pages: '30–35', startPdfPage: 30, thumbPdfPage: 31, thumbCrop: { x: 0.03, y: 0.03, w: 0.94, h: 0.90, scale: 0.98 } },
-  { number: '05', title: 'Windberg', type: 'Competition', pages: '36–41', startPdfPage: 36, thumbPdfPage: 37, thumbCrop: { x: 0.03, y: 0.02, w: 0.94, h: 0.92, scale: 0.98 } },
-  { number: '06', title: 'NSU BRA Canopy', type: 'Competition', pages: '42–47', startPdfPage: 42, thumbPdfPage: 43, thumbCrop: { x: 0.03, y: 0.03, w: 0.94, h: 0.90, scale: 0.98 } },
-  { number: '07', title: 'Where Boundaries Fade', type: 'Master’s Thesis', pages: '48–57', startPdfPage: 48, thumbPdfPage: 49, thumbCrop: { x: 0.03, y: 0.03, w: 0.94, h: 0.90, scale: 0.98 } }
+  { number: '01', title: 'Sea Echo', type: 'Bachelor’s Thesis & Competition', pages: '4–13', startPdfPage: 4, thumbPdfPage: 5, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } },
+  { number: '02', title: 'Neighborhood Fabric', type: 'Competition', pages: '14–21', startPdfPage: 14, thumbPdfPage: 15, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } },
+  { number: '03', title: 'Beco das Artes', type: 'Student Project & Competition', pages: '22–29', startPdfPage: 22, thumbPdfPage: 23, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } },
+  { number: '04', title: 'Gardens Next Door', type: 'Student Project', pages: '30–35', startPdfPage: 30, thumbPdfPage: 31, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } },
+  { number: '05', title: 'Windberg', type: 'Competition', pages: '36–41', startPdfPage: 36, thumbPdfPage: 37, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } },
+  { number: '06', title: 'NSU BRA Canopy', type: 'Competition', pages: '42–47', startPdfPage: 42, thumbPdfPage: 43, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } },
+  { number: '07', title: 'Where Boundaries Fade', type: 'Master’s Thesis', pages: '48–57', startPdfPage: 48, thumbPdfPage: 49, thumbCrop: { x: 0.00, y: 0.00, w: 1.00, h: 0.92, scale: 1 } }
 ];
 
 const bookStage = document.getElementById('bookStage');
@@ -104,8 +105,9 @@ async function renderPdfPageImage(pdfPageNumber, targetWidth = 1250) {
 }
 
 async function renderProjectThumbnail(project) {
-  const cacheKey = `right-page-visual-${project.number}`;
+  const cacheKey = `visual-fill-v5-${project.number}`;
   if (thumbnailCache.has(cacheKey)) return thumbnailCache.get(cacheKey);
+
   const promise = pdfDoc.getPage(project.thumbPdfPage).then((page) => {
     const viewport = page.getViewport({ scale: 1 });
     const scale = 1800 / viewport.width;
@@ -114,6 +116,7 @@ async function renderProjectThumbnail(project) {
     const sourceContext = sourceCanvas.getContext('2d', { alpha: false });
     sourceCanvas.width = Math.floor(scaledViewport.width);
     sourceCanvas.height = Math.floor(scaledViewport.height);
+
     return page.render({ canvasContext: sourceContext, viewport: scaledViewport }).promise.then(() => {
       const crop = project.thumbCrop;
       const sx = Math.floor(crop.x * sourceCanvas.width);
@@ -124,18 +127,20 @@ async function renderProjectThumbnail(project) {
       const outputContext = outputCanvas.getContext('2d', { alpha: false });
       outputCanvas.width = 1200;
       outputCanvas.height = 848;
+
       outputContext.fillStyle = '#ffffff';
       outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+
       const bgScale = Math.max(outputCanvas.width / sw, outputCanvas.height / sh);
       const bgw = sw * bgScale;
       const bgh = sh * bgScale;
       outputContext.save();
-      outputContext.globalAlpha = 0.35;
-      try { outputContext.filter = 'blur(18px) contrast(1.04)'; } catch (e) {}
+      try { outputContext.filter = 'blur(14px) saturate(1.02) contrast(1.04)'; } catch (e) {}
       outputContext.drawImage(sourceCanvas, sx, sy, sw, sh, (outputCanvas.width - bgw) / 2, (outputCanvas.height - bgh) / 2, bgw, bgh);
       outputContext.restore();
-      outputContext.fillStyle = 'rgba(255,255,255,0.08)';
+      outputContext.fillStyle = 'rgba(255,255,255,0.03)';
       outputContext.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+
       const fgScale = Math.min(outputCanvas.width / sw, outputCanvas.height / sh) * (crop.scale || 1);
       const fgw = sw * fgScale;
       const fgh = sh * fgScale;
@@ -143,6 +148,7 @@ async function renderProjectThumbnail(project) {
       return outputCanvas.toDataURL('image/webp', 0.92);
     });
   });
+
   thumbnailCache.set(cacheKey, promise);
   return promise;
 }
@@ -258,6 +264,25 @@ function buildProjectCards() {
   projectGrid.querySelectorAll('button[data-pdf-page]').forEach((button) => button.addEventListener('click', () => openPdfPage(Number(button.dataset.pdfPage))));
 }
 
+function enhanceAboutProfile() {
+  const profile = document.querySelector('.cv-intro');
+  if (!profile || profile.querySelector('.cv-profile-layout')) return;
+  const heading = profile.querySelector('h3');
+  const paragraphs = [...profile.querySelectorAll('p')];
+  const copy = document.createElement('div');
+  copy.className = 'cv-profile-copy';
+  if (heading) copy.appendChild(heading);
+  paragraphs.forEach((paragraph) => copy.appendChild(paragraph));
+  const figure = document.createElement('figure');
+  figure.className = 'cv-profile-photo';
+  figure.innerHTML = `<img src="${PROFILE_IMAGE_URL}" alt="Dorota Cichoń portrait" />`;
+  const layout = document.createElement('div');
+  layout.className = 'cv-profile-layout';
+  layout.append(copy, figure);
+  profile.innerHTML = '';
+  profile.appendChild(layout);
+}
+
 async function loadThumbnails() {
   const projectThumbs = [...document.querySelectorAll('img[data-project-thumb-index]')];
   await Promise.all(projectThumbs.map(async (img) => {
@@ -315,6 +340,7 @@ window.addEventListener('resize', () => {
 });
 window.addEventListener('load', () => {
   buildProjectCards();
+  enhanceAboutProfile();
   initNavigation();
   initPdfBook();
 });
